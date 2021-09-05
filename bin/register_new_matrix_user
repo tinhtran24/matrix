@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-SYNAPSE_CONTAINER=matrix-env-synapse
+SYNAPSE_CONTAINER=matrix-synapse
 
 if ! docker info > /dev/null 2>&1; then
   echo 'docker daemon appears to not be running.'
