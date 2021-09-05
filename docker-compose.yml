@@ -1,0 +1,78 @@
+version: '3.8'
+
+services:
+  # homeserver
+  synapse:
+    image: matrixdotorg/synapse:v1.41.0
+    container_name: matrix-env-synapse
+    volumes:
+      - ./synapse:/synapse
+    ports:
+      - "8008:8008"
+    env_file:
+      - .env
+      - .env.local
+
+  # homeserver admin UI
+  synapse-admin:
+    image: awesometechnologies/synapse-admin:0.8.1
+    container_name: matrix-env-synapse-admin
+    ports:
+      - "8009:80"
+    env_file:
+      - .env
+      - .env.local
+
+  # client
+  element:
+    image: vectorim/element-web:v1.7.34
+    container_name: matrix-env-element
+    volumes:
+      - ./element/config.json:/app/config.json
+    ports:
+      - "8088:80"
+    env_file:
+      - .env
+      - .env.local
+    depends_on:
+      - synapse
+
+  # integration manager
+  dimension:
+    image: turt2live/matrix-dimension
+    container_name: matrix-env-dimension
+    volumes:
+      - ./dimension:/data
+    ports:
+      - "8011:8184"
+    env_file:
+      - .env
+      - .env.local
+    depends_on:
+      - synapse
+      - go-neb
+
+  # extensible bot, written in go
+  go-neb:
+    image: matrixdotorg/go-neb
+    container_name: matrix-env-go-neb
+    volumes:
+      - ./go-neb:/data
+    ports:
+      - "8012:4050"
+    env_file:
+      - .env
+      - .env.local
+    depends_on:
+      - synapse
+
+  # extensible bot, written in Python
+  maubot:
+    image: dock.mau.dev/maubot/maubot
+    container_name: matrix-env-maubot
+    volumes:
+      - ./maubot:/data
+    ports:
+      - "8013:29316"
+    depends_on:
+      - synapse

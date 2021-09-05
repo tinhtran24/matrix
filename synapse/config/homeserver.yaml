@@ -1,0 +1,74 @@
+#
+# This file contains the minimal configuration required for Synapse to run.
+# For a list of all available configuration options, along with documentation for each option, see:
+# https://github.com/Automattic/matrix-env/blob/522227eeb7b98647a962ba027046016cf1f8b726/data/homeserver.yaml
+#
+
+server_name: "matrix.test"
+public_baseurl: "http://localhost:8008"
+
+trusted_key_servers:
+  - server_name: "matrix.org"
+
+report_stats: false
+log_config: "/synapse/config/log.config"
+signing_key_path: "/synapse/config/signing.key"
+
+pid_file: "/synapse/data/homeserver.pid"
+media_store_path: "/synapse/data/media_store"
+
+app_service_config_files:
+  - "/synapse/config/appservice-dimension.yaml"
+
+registration_shared_secret: "YTV.UDYmbtn5TTh8;1l#lNo8sXx2n8qQBE^~g1GZEioyvJd1n0"
+
+trusted_third_party_id_servers:
+  - matrix.org
+  - vector.im
+  - riot.im
+
+listeners:
+  - port: 8008
+    tls: false
+    type: http
+    x_forwarded: true
+
+    resources:
+      - names: [client, federation]
+        compress: false
+
+database:
+  name: sqlite3
+  args:
+    database: /synapse/data/homeserver.db
+
+opentracing:
+  enabled: true
+  force_tracing_for_users:
+    - "@admin:matrix.test"
+
+url_preview_enabled: true
+url_preview_ip_range_blacklist:
+  - '127.0.0.0/8'
+  - '10.0.0.0/8'
+  - '172.16.0.0/12'
+  - '192.168.0.0/16'
+  - '100.64.0.0/10'
+  - '192.0.0.0/24'
+  - '169.254.0.0/16'
+  - '192.88.99.0/24'
+  - '198.18.0.0/15'
+  - '192.0.2.0/24'
+  - '198.51.100.0/24'
+  - '203.0.113.0/24'
+  - '224.0.0.0/4'
+  - '::1/128'
+  - 'fe80::/10'
+  - 'fc00::/7'
+  - '2001:db8::/32'
+  - 'ff00::/8'
+  - 'fec0::/10'
+## Registration ##
+
+# Enable registration for new users.
+enable_registration: True
